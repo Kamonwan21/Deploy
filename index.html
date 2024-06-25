@@ -86,10 +86,10 @@
         originalConsoleError.apply(console, args); // แสดงข้อความใน console ตามปกติ
       };
 
-      // ทดสอบการทำงาน
+      // ฟังก์ชันทดสอบการทำงาน
       function triggerError() {
-        console.error('This is a test error!');
-        throw new Error('Test Error!');
+        console.error('This is a test error from console.error!');
+        throw new Error('This is a test error from window.onerror!');
       }
 
       // ทริกเกอร์ข้อผิดพลาดเพื่อทดสอบ
