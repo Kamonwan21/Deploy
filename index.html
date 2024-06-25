@@ -58,29 +58,42 @@
       const popup = document.getElementById('errorPopup');
       const closeBtn = document.querySelector('.close-btn');
 
+      // ฟังก์ชันแสดงข้อผิดพลาด
       function showError(message) {
-        document.getElementById('errorMessage').textContent = message;
+        const errorMessageElement = document.getElementById('errorMessage');
+        errorMessageElement.textContent = message;
         popup.style.display = 'block';
       }
 
+      // ฟังก์ชันปิด popup
       function closeError() {
         popup.style.display = 'none';
       }
 
+      // Event Listener สำหรับปิด popup
       closeBtn.addEventListener('click', closeError);
 
-      // Handle uncaught errors
+      // ดักจับข้อผิดพลาดที่ไม่ได้จัดการ
       window.onerror = function(message, source, lineno, colno, error) {
         showError(`Error: ${message} at ${source}:${lineno}:${colno}`);
-        return true; // Prevent error from logging to console
+        return true; // ป้องกันไม่ให้ error แสดงใน console
       };
 
-      // Handle console errors
+      // ดักจับข้อความ error ที่ใช้ console.error
       const originalConsoleError = console.error;
       console.error = function(...args) {
         showError(`Console Error: ${args.join(' ')}`);
-        originalConsoleError.apply(console, args);
+        originalConsoleError.apply(console, args); // แสดงข้อความใน console ตามปกติ
       };
+
+      // ทดสอบการทำงาน
+      function triggerError() {
+        console.error('This is a test error!');
+        throw new Error('Test Error!');
+      }
+
+      // ทริกเกอร์ข้อผิดพลาดเพื่อทดสอบ
+      triggerError();
     });
   </script>
 </body>
