@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="./">
 
   <meta charset="UTF-8">
@@ -31,10 +18,7 @@
 
   <title>fluttertest</title>
   <link rel="manifest" href="manifest.json">
-  <title>Error Handling Example</title>
   <link rel="stylesheet" href="styles.css">
-
-  
 </head>
 <body>
     <div id="errorPopup" class="popup">
@@ -47,6 +31,43 @@
     <button onclick="triggerError()">Trigger Error</button>
 
     <script src="scripts.js"></script>
-  <script src="flutter_bootstrap.js" async></script>
+    <script src="flutter_bootstrap.js" async></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const popup = document.getElementById('errorPopup');
+          const closeBtn = document.querySelector('.close-btn');
+
+          function showError(message) {
+              document.getElementById('errorMessage').textContent = message;
+              popup.style.display = 'block';
+          }
+
+          function closeError() {
+              popup.style.display = 'none';
+          }
+
+          closeBtn.addEventListener('click', closeError);
+
+          // ดักจับข้อผิดพลาดที่เกิดขึ้นใน window
+          window.onerror = function(message, source, lineno, colno, error) {
+              showError(`Error: ${message} at ${source}:${lineno}:${colno}`);
+              return true; // ป้องกันไม่ให้แสดงข้อความใน Console
+          };
+
+          // ดักจับข้อผิดพลาดที่เกิดขึ้นใน console.error
+          const originalConsoleError = console.error;
+          console.error = function(...args) {
+              showError(`Console Error: ${args.join(' ')}`);
+              originalConsoleError.apply(console, args); // แสดงข้อผิดพลาดใน Console ตามปกติ
+          };
+
+          // ฟังก์ชันทดสอบการแสดงข้อผิดพลาด
+          window.triggerError = function() {
+              console.error('This is a test error!');
+              throw new Error('Test Error!');
+          };
+      });
+    </script>
 </body>
 </html>
