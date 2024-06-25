@@ -74,8 +74,8 @@
       closeBtn.addEventListener('click', closeError);
 
       // ดักจับข้อผิดพลาดที่ไม่ได้จัดการ
-      window.onerror = function(message, source, lineno, colno, error) {
-        showError(`${message} at ${source}:${lineno}:${colno}`);
+      window.onerror = function(message, error) {
+        showError(`${message}`);
         return true; // ป้องกันไม่ให้ error แสดงใน console
       };
 
@@ -85,15 +85,6 @@
         showError(`Console Error: ${args.join(' ')}`);
         originalConsoleError.apply(console, args); // แสดงข้อความใน console ตามปกติ
       };
-
-      // ฟังก์ชันทดสอบการทำงาน
-      function triggerError() {
-        console.error('This is a test error from console.error!');
-        throw new Error('This is a test error from window.onerror!');
-      }
-
-      // ทริกเกอร์ข้อผิดพลาดเพื่อทดสอบ
-      triggerError();
     });
   </script>
 </body>
