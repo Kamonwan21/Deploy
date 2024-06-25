@@ -1,91 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base href="./">
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="fluttertest">
-  <link rel="apple-touch-icon" href="./icons/Icon-192.png">
-  <link rel="icon" type="image/png" href="favicon.png"/>
-  <title>fluttertest</title>
-  <link rel="manifest" href="manifest.json">
-  
-  <!-- CSS Styles for Popup -->
-  <style>
-    .popup {
-      display: none; /* Start with hidden */
-      position: fixed;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
-      width: 300px;
-      border: 1px solid #333;
-      background-color: #fff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    }
-    .popup-content {
-      padding: 20px;
-      text-align: center;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-      font-size: 18px;
-    }
-  </style>
+    <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+    -->
+    <base href="./">
+
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A new Flutter project.">
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="fluttertest">
+    <link rel="apple-touch-icon" href="./icons/Icon-192.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png"/>
+
+    <title>fluttertest</title>
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        .error-popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none; /* ซ่อนในตอนเริ่มต้น */
+        }
+    </style>
 </head>
 <body>
-  <!-- Popup Element -->
-  <div id="errorPopup" class="popup">
-    <div class="popup-content">
-      <span class="close-btn">&times;</span>
-      <p id="errorMessage">This is an error message!</p>
-    </div>
-  </div>
+    <h1>ลองทำให้เกิด Error!</h1>
+    <button onclick="triggerError()">Click me to trigger an error</button>
 
-  <!-- Flutter bootstrap script -->
-  <script src="flutter_bootstrap.js" async></script>
+    <div id="errorPopup" class="error-popup"></div>
 
-  <!-- JavaScript for Error Handling -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const popup = document.getElementById('errorPopup');
-      const closeBtn = document.querySelector('.close-btn');
+    <script>
+        // ฟังก์ชันดักจับ Error ทั่วไป
+        window.onerror = function(message, source, lineno, colno, error) {
+            var errorMessage = "Error: " + message + "\n" +
+                               "Source: " + source + "\n" +
+                               "Line: " + lineno + "\n" +
+                               "Column: " + colno + "\n" +
+                               "Stack Trace: " + (error && error.stack ? error.stack : 'N/A');
+            showErrorPopup(errorMessage);
+            return true; // ป้องกันไม่ให้ Error ไปแสดงใน Console
+        };
 
-      // ฟังก์ชันแสดงข้อผิดพลาด
-      function showError(message) {
-        const errorMessageElement = document.getElementById('errorMessage');
-        errorMessageElement.textContent = message;
-        popup.style.display = 'block';
-      }
+        // ฟังก์ชันสำหรับสร้าง Popup และแสดง Error
+        function showErrorPopup(errorMessage) {
+            var popup = document.getElementById('errorPopup');
+            popup.textContent = errorMessage;
+            popup.style.display = 'block';
+            // ซ่อน Popup หลังจาก 5 วินาที
+            setTimeout(function() {
+                popup.style.display = 'none';
+            }, 5000);
+        }
 
-      // ฟังก์ชันปิด popup
-      function closeError() {
-        popup.style.display = 'none';
-      }
+        // ฟังก์ชันจำลองการเกิด Error
+        function triggerError() {
+            // นี่จะทำให้เกิด ReferenceError
+            nonExistentFunction();
+        }
+    </script>
 
-      // Event Listener สำหรับปิด popup
-      closeBtn.addEventListener('click', closeError);
-
-      // ดักจับข้อผิดพลาดที่ไม่ได้จัดการ
-      window.onerror = function(message, error) {
-        showError(`${message}`);
-        return true; // ป้องกันไม่ให้ error แสดงใน console
-      };
-
-      // ดักจับข้อความ error ที่ใช้ console.error
-      const originalConsoleError = console.error;
-      console.error = function(...args) {
-        showError(`Console Error: ${args.join(' ')}`);
-        originalConsoleError.apply(console, args); // แสดงข้อความใน console ตามปกติ
-      };
-    });
-  </script>
+    <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
