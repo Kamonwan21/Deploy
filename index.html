@@ -75,7 +75,7 @@
 
       // ดักจับข้อผิดพลาดที่ไม่ได้จัดการ
       window.onerror = function(message, source, lineno, colno, error) {
-        showError(`Error: ${message} at ${source}:${lineno}:${colno}`);
+        showError(`${message} at ${source}:${lineno}:${colno}`);
         return true; // ป้องกันไม่ให้ error แสดงใน console
       };
 
